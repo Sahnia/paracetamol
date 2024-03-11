@@ -10,9 +10,11 @@ set_here()
 para <- read_csv(here("Paracetamol IV and oral - Drug Usage Summary Report Dec 2023.csv"))
 
 
+
 #flatten names
 
 para<- clean_names(para)
+
 
 para <-
   para %>% 
@@ -123,11 +125,11 @@ theatres_plot<-
   ggplot(theatres, aes(x = Month, y = quant, group = item_merged, color = item_merged)) +
   geom_point() +
   geom_line()+
-  # scale_x_continuous(breaks = unique(theatres$Month))
   labs(x = "Month", y = "Quantity") +
   theme_minimal() +
- # theme(legend.position = c(0.3, 0.85))+
   scale_color_discrete(name = "Drug") +
   theme(axis.text.x = element_text(angle = 90))
+
+# Save plot
 ggsave("theatres 2023.pdf", width = 397, height = 210, units = "mm",  dpi = 300)
 
