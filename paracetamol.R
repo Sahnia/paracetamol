@@ -1,4 +1,3 @@
-
 library(here)
 library(tidyverse)
 library(janitor)
@@ -7,7 +6,7 @@ set_here()
 
 #load datasets
 
-para <- read_csv(here("Paracetamol IV and oral - Drug Usage Summary Report Dec 2023.csv"))
+para <- read_csv(here("Paracetamol IV and oral - Drug Usage Summary Report Mar 2024 CSV.csv"))
 
 
 
@@ -32,7 +31,8 @@ para <-
                               "PARACETAMOL 500 mg Tablets 100 Tablet Bottle" = "PARACETAMOL 500 mg Tablets",                        
                               "PARACETAMOL 500 mg Tablets 1000 Tablet pack" = "PARACETAMOL 500 mg Tablets",                         
                               "PARACETAMOL 500 mg Tablets 32 Tablet Pack" = "PARACETAMOL 500 mg Tablets")) %>% 
-  mutate_at(vars(jan_23:dec_23), ~ case_when(
+  #update dates
+  mutate_at(vars(apr_23:mar_24), ~ case_when(
   item_2 == "PARACETAMOL (SUGAR FREE) 250 mg in 5ml Suspension. 100 mL Bottle" ~ . * 100,
   item_2 == "PARACETAMOL (SUGAR FREE) 250 mg in 5ml Suspension. 200 mL Bottle" ~ . * 200,
   item_2 == "PARACETAMOL (SUGAR FREE) 250 mg in 5ml Suspension. 500 mL Bottle"  ~ . * 500,
@@ -45,10 +45,8 @@ para <-
   item_2 == "PARACETAMOL 500 mg Tablets 32 Tablet Pack"  ~ . * 32
   )) %>% 
   group_by( location, item_merged) %>%
-  summarise(jan_23 = sum(jan_23),
-            feb_23 = sum(feb_23),
-            mar_23 = sum(mar_23),
-            apr_23 = sum(apr_23),
+  #update dates
+  summarise(apr_23 = sum(apr_23),
             may_23 = sum(may_23),
             jun_23 = sum(jun_23),
             jul_23 = sum(jul_23),
@@ -56,7 +54,10 @@ para <-
             sep_23 = sum(sep_23),
             oct_23 = sum(oct_23),
             nov_23 = sum(nov_23),
-            dec_23 = sum(dec_23))%>% 
+            dec_23 = sum(dec_23),
+            jan_24 = sum(jan_24),
+            feb_24 = sum(feb_24),
+            mar_24 = sum(mar_24))%>% 
   ungroup()
             
 
@@ -124,12 +125,10 @@ wards_plot<-
 theatres_plot<-
   ggplot(theatres, aes(x = Month, y = quant, group = item_merged, color = item_merged)) +
   geom_point() +
-  geom_line()+
+  geom_line(size=2)+
   labs(x = "Month", y = "Quantity") +
   theme_minimal() +
   scale_color_discrete(name = "Drug") +
   theme(axis.text.x = element_text(angle = 90))
-
-# Save plot
-ggsave("theatres 2023.pdf", width = 397, height = 210, units = "mm",  dpi = 300)
+ggsave("theatres apr 24.pdf", width = 397, height = 210, units = "mm",  dpi = 300)
 
